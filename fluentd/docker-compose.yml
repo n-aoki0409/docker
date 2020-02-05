@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  fluentd:
+    container_name: my_fluentd
+    build: .
+    ports:
+      - 9880:9880
+      - 24224:24224
+    volumes:
+      - ./fluent.conf:/fluentd/etc/fluent.conf
+
+  # prometheus:
+  #   container_name: my_prometheus
+  #   build: prometheus
+  #   ports:
+  #     - 9090:9090
+  #   volumes:
+  #     - ./prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml
+
+networks:
+  fluentd:
+    driver: bridge
