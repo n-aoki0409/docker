@@ -18,6 +18,26 @@ services:
   #   volumes:
   #     - ./prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml
 
+  # forwarder:
+  #   container_name: my_forwarder
+  #   build: log-forwarder-aggregator
+  #   ports:
+  #     - 24224:24224
+  #   volumes:
+  #     - ./log-forwarder-aggregator/forwarder/fluent.conf:/fluentd/etc/fluent.conf
+
+  # primary_aggregator:
+  #   container_name: my_primary_aggregator
+  #   build: log-forwarder-aggregator
+  #   volumes:
+  #     - ./log-forwarder-aggregator/aggregator/fluent.conf:/fluentd/etc/fluent.conf
+
+  # secondary_aggregator:
+  #   container_name: my_secondary_aggregator
+  #   build: log-forwarder-aggregator
+  #   volumes:
+  #     - ./log-forwarder-aggregator/aggregator/fluent.conf:/fluentd/etc/fluent.conf
+
 networks:
-  fluentd:
+  default:
     driver: bridge
