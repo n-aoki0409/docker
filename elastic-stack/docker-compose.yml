@@ -20,6 +20,20 @@ services:
     depends_on:
       - elasticsearch
 
+  curator:
+    container_name: my_curator
+    build: curator
+    environment:
+      ELASTICSEARCH_HOST: elasticsearch
+      CRON: 0 0 * * *
+      CONFIG_FILE: /usr/share/curator/config/curator.yml
+      COMMAND: /usr/share/curator/config/action.yml
+      UNIT_COUNT: 2
+    volumes:
+      - ./curator/config:/usr/share/curator/config
+    depends_on:
+      - elasticsearch
+
 networks:
   elastic:
     driver: bridge
