@@ -20,6 +20,14 @@ services:
     depends_on:
       - elasticsearch
 
+  logstash:
+    container_name: my_logstash
+    build: logstash
+    volumes:
+      - ./logstash/config/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 9600:9600
+
   curator:
     container_name: my_curator
     build: curator
