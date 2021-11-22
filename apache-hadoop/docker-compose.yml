@@ -1,0 +1,14 @@
+version: "3"
+services:
+  hadoop:
+    container_name: hadoop
+    ports:
+      - "9870:9870"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - hadoop
+
+networks:
+  hadoop:
