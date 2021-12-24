@@ -1,0 +1,12 @@
+version: "3"
+services:
+  hadoop:
+    container_name: hadoop-hive
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - hadoop
+
+networks:
+  hadoop:
