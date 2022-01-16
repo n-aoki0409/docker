@@ -1,0 +1,43 @@
+version: "3"
+services:
+  hadoop1:
+    container_name: hadoop1
+    ports:
+      - "9870:9870"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config:/hadoop/etc/hadoop
+      - ./master/start:/hadoop/start
+    networks:
+      - hadoop
+
+  hadoop2:
+    container_name: hadoop2
+    ports:
+      - "9871:9870"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config:/hadoop/etc/hadoop
+      - ./slave/start:/hadoop/start
+    networks:
+      - hadoop
+
+  hadoop3:
+    container_name: hadoop3
+    ports:
+      - "9872:9870"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config:/hadoop/etc/hadoop
+      - ./slave/start:/hadoop/start
+    networks:
+      - hadoop
+
+networks:
+  hadoop:
