@@ -10,7 +10,6 @@
   <property>
     <name>yarn.application.classpath</name>
     <value>
-      /hadoop/etc/hadoop,
       /hadoop/share/hadoop/common/*,
       /hadoop/share/hadoop/common/lib/*,
       /hadoop/share/hadoop/hdfs/*,

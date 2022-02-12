@@ -1,6 +1,6 @@
 <configuration>
   <property>
-    <name>fs.defaultFS</name>
+    <name>fs.default.name</name>
     <value>hdfs://hadoop1:9000</value>
   </property>
 </configuration>
