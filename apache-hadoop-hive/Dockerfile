@@ -12,17 +12,17 @@ RUN mkdir /run/sshd \
   && chmod 0600 ~/.ssh/authorized_keys
 
 # Hadoop
-RUN wget -q -O - https://archive.apache.org/dist/hadoop/core/hadoop-2.9.2/hadoop-2.9.2.tar.gz | tar zxf -
-RUN mv /hadoop-2.9.2 /hadoop
+RUN wget -q -O - https://archive.apache.org/dist/hadoop/core/hadoop-3.3.1/hadoop-3.3.1.tar.gz | tar zxf -
+RUN mv /hadoop-3.3.1 /hadoop
 COPY config/hadoop /hadoop/etc/hadoop/
 ENV PATH=/hadoop/bin:/hadoop/sbin:$PATH
 RUN hdfs namenode -format
 
 # Hive
-RUN wget -q -O - http://ftp.tsukuba.wide.ad.jp/software/apache/hive/hive-2.3.9/apache-hive-2.3.9-bin.tar.gz | tar zxf -
-RUN mv /apache-hive-2.3.9-bin /apache-hive-bin
-ENV HIVE_HOME=/apache-hive-bin PATH=/apache-hive-bin/bin:$PATH
+RUN wget -q -O - http://ftp.tsukuba.wide.ad.jp/software/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz | tar zxf -
+RUN mv /apache-hive-3.1.2-bin /apache-hive-bin
 COPY config/hive /apache-hive-bin/conf/
+ENV HIVE_HOME=/apache-hive-bin PATH=/apache-hive-bin/bin:$PATH
 
 WORKDIR /root
 COPY start /root/
