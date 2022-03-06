@@ -1,0 +1,95 @@
+version: "3"
+
+services:
+  zookeeper1:
+    image: confluentinc/cp-zookeeper:7.0.1
+    hostname: zookeeper1
+    container_name: kafka-zookeeper1
+    ports:
+      - "22181:22181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 22181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:32888:33888;zookeeper3:42888:43888
+
+  zookeeper2:
+    image: confluentinc/cp-zookeeper:7.0.1
+    hostname: zookeeper2
+    container_name: kafka-zookeeper2
+    ports:
+      - "32181:32181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:32888:33888;zookeeper3:42888:43888
+
+  zookeeper3:
+    image: confluentinc/cp-zookeeper:7.0.1
+    hostname: zookeeper3
+    container_name: kafka-zookeeper3
+    ports:
+      - "42181:42181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 42181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:32888:33888;zookeeper3:42888:43888
+
+  broker1:
+    image: confluentinc/cp-kafka:7.0.1
+    hostname: broker1
+    container_name: kafka-broker1
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:22181,zookeeper2:32181,zookeeper3:42181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:29092
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+
+  broker2:
+    image: confluentinc/cp-kafka:7.0.1
+    hostname: broker2
+    container_name: kafka-broker2
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:22181,zookeeper2:32181,zookeeper3:42181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:39092
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+
+  broker3:
+    image: confluentinc/cp-kafka:7.0.1
+    hostname: broker3
+    container_name: kafka-broker3
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:22181,zookeeper2:32181,zookeeper3:42181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:49092
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+
+  cli:
+    image: confluentinc/cp-kafka:7.0.1
+    hostname: cli
+    container_name: kafka-cli
+    depends_on:
+      - broker
+    entrypoint: /bin/sh
+    tty: true
+
+networks:
+  kafka:
