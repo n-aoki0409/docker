@@ -7,8 +7,10 @@ services:
     ports:
       - 9880:9880
       - 24224:24224
+      - 24220:24220
     volumes:
       - ./fluent.conf:/fluentd/etc/fluent.conf
+      - ./fizzbuzz.py:/fluentd/etc/fizzbuzz.py
     # depends_on:
     #   - elasticsearch
 
@@ -19,20 +21,20 @@ services:
   #   logging:
   #     driver: fluentd
   #     options:
-  #       fluentd-address: localhost:24224
+  #       fluentd-address: 0.0.0.0:24224
   #       tag: httpd.access
   #   depends_on:
   #     - fluentd
 
   # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
   #   environment:
   #     - discovery.type=single-node
   #   ports:
   #     - 9200:9200
 
   # kibana:
-  #   image: docker.elastic.co/kibana/kibana:7.5.2
+  #   image: docker.elastic.co/kibana/kibana:7.13.1
   #   ports:
   #     - 5601:5601
   #   depends_on:
@@ -51,6 +53,7 @@ services:
   #   build: log-forwarder-aggregator
   #   ports:
   #     - 24224:24224
+  #     - 8888:8888
   #   volumes:
   #     - ./log-forwarder-aggregator/forwarder/fluent.conf:/fluentd/etc/fluent.conf
 
