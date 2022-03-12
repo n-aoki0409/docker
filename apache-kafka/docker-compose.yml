@@ -6,7 +6,7 @@ services:
     hostname: zookeeper1
     container_name: kafka-zookeeper1
     ports:
-      - "22181:22181"
+      - 22181:22181
     environment:
       ZOOKEEPER_CLIENT_PORT: 22181
       ZOOKEEPER_TICK_TIME: 2000
@@ -18,7 +18,7 @@ services:
     hostname: zookeeper2
     container_name: kafka-zookeeper2
     ports:
-      - "32181:32181"
+      - 32181:32181
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
@@ -30,7 +30,7 @@ services:
     hostname: zookeeper3
     container_name: kafka-zookeeper3
     ports:
-      - "42181:42181"
+      - 42181:42181
     environment:
       ZOOKEEPER_CLIENT_PORT: 42181
       ZOOKEEPER_TICK_TIME: 2000
@@ -38,7 +38,9 @@ services:
       ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:32888:33888;zookeeper3:42888:43888
 
   broker1:
-    image: confluentinc/cp-kafka:7.0.1
+    build:
+      context: ./broker
+      dockerfile: Dockerfile
     hostname: broker1
     container_name: kafka-broker1
     depends_on:
@@ -46,15 +48,18 @@ services:
       - kafka-zookeeper2
       - kafka-zookeeper3
     ports:
-      - "29092:29092"
+      - 29092:29092
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:22181,zookeeper2:32181,zookeeper3:42181"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:29092
-      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      CONFLUENT_SUPPORT_METRICS_ENABLE: false
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar
 
   broker2:
-    image: confluentinc/cp-kafka:7.0.1
+    build:
+      context: ./broker
+      dockerfile: Dockerfile
     hostname: broker2
     container_name: kafka-broker2
     depends_on:
@@ -62,15 +67,18 @@ services:
       - kafka-zookeeper2
       - kafka-zookeeper3
     ports:
-      - "39092:39092"
+      - 39092:39092
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:22181,zookeeper2:32181,zookeeper3:42181"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:39092
-      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      CONFLUENT_SUPPORT_METRICS_ENABLE: false
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar
 
   broker3:
-    image: confluentinc/cp-kafka:7.0.1
+    build:
+      context: ./broker
+      dockerfile: Dockerfile
     hostname: broker3
     container_name: kafka-broker3
     depends_on:
@@ -78,12 +86,13 @@ services:
       - kafka-zookeeper2
       - kafka-zookeeper3
     ports:
-      - "49092:49092"
+      - 49092:49092
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:22181,zookeeper2:32181,zookeeper3:42181"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:49092
-      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
+      CONFLUENT_SUPPORT_METRICS_ENABLE: false
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar
 
   client:
     image: confluentinc/cp-kafka:7.0.1
@@ -118,7 +127,7 @@ services:
       CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
-      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/filestream-connectors"
+      CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/filestream-connectors
 
 networks:
   kafka:
