@@ -40,7 +40,6 @@ services:
   broker1:
     build:
       context: ./broker
-      dockerfile: Dockerfile
     hostname: broker1
     container_name: kafka-broker1
     depends_on:
@@ -54,12 +53,11 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:29092
       CONFLUENT_SUPPORT_METRICS_ENABLE: false
-      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker1
 
   broker2:
     build:
       context: ./broker
-      dockerfile: Dockerfile
     hostname: broker2
     container_name: kafka-broker2
     depends_on:
@@ -73,12 +71,11 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:39092
       CONFLUENT_SUPPORT_METRICS_ENABLE: false
-      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker2
 
   broker3:
     build:
       context: ./broker
-      dockerfile: Dockerfile
     hostname: broker3
     container_name: kafka-broker3
     depends_on:
@@ -92,12 +89,14 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:49092
       CONFLUENT_SUPPORT_METRICS_ENABLE: false
-      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker3
 
   client:
     image: confluentinc/cp-kafka:7.0.1
     hostname: cli
     container_name: kafka-client
+    volumes:
+      - ./kafka-sandbox-assembly-1.0.jar:/home/appuser/kafka-sandbox-assembly-1.0.jar
     depends_on:
       - kafka-broker1
       - kafka-broker2
@@ -128,6 +127,21 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/filestream-connectors
+
+  # fluentd:
+  #   build:
+  #     context: ./fluentd
+  #   hostname: fluentd
+  #   container_name: kafka-fluentd
+  #   ports:
+  #     - 9880:9880
+  #     - 24224:24224
+  #   volumes:
+  #     - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
+  #   depends_on:
+  #     - kafka-broker1
+  #     - kafka-broker2
+  #     - kafka-broker3
 
 networks:
   kafka:
