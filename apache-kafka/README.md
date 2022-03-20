@@ -28,8 +28,7 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 "file": "/home/appuser/zaiko-latest.txt",
 "topic": "zaiko-data"
 }
-}
-'
+}'
 
 ##### FileStreamSinkConnector の設定
 
@@ -41,4 +40,24 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 "file": "/home/appuser/ec-zaiko-latest.txt",
 "topics": "zaiko-data"
 }
+}'
+
+#### JdbcSourceConnector の設定
+
+curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' -d '
+{
+"name": "source-jdbc",
+"config": {
+"connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+"tasks.max": 1,
+"connection.url": "jdbc:mysql://mysql:3306/connect_test",
+"connection.user": "root",
+"connection.password": "root",
+"mode": "incrementing",
+"incrementing.column.name": "id",
+"timestamp.column.name": "modified",
+"table.whitelist": "test",
+"topic.prefix": "source-jdbc-",
+"poll.interval.ms": 1000
 }
+}'
