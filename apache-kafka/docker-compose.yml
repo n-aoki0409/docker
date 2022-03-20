@@ -93,16 +93,30 @@ services:
 
   client:
     image: confluentinc/cp-kafka:7.0.1
-    hostname: cli
+    hostname: client
     container_name: kafka-client
-    volumes:
-      - ./kafka-sandbox-assembly-1.0.jar:/home/appuser/kafka-sandbox-assembly-1.0.jar
+    # volumes:
+    #   - ./kafka-sandbox-assembly-1.0.jar:/home/appuser/kafka-sandbox-assembly-1.0.jar
     depends_on:
       - kafka-broker1
       - kafka-broker2
       - kafka-broker3
     entrypoint: /bin/sh
     tty: true
+
+  proxy:
+    image: confluentinc/cp-kafka-rest:7.0.1
+    hostname: proxy
+    container_name: kafka-proxy
+    depends_on:
+      - kafka-broker1
+      - kafka-broker2
+      - kafka-broker3
+    ports:
+      - 8082:8082
+    environment:
+      KAFKA_REST_LISTENERS: http://0.0.0.0:8082
+      KAFKA_REST_BOOTSTRAP_SERVERS: broker1:29092,broker2:39092,broker3:49092
 
   connect:
     image: confluentinc/cp-kafka-connect
