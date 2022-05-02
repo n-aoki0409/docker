@@ -12,8 +12,8 @@ RUN mkdir /run/sshd \
   && chmod 0600 ~/.ssh/authorized_keys
 
 # Hadoop
-RUN wget -q -O - https://archive.apache.org/dist/hadoop/core/hadoop-3.3.1/hadoop-3.3.1.tar.gz | tar zxf -
-RUN mv /hadoop-3.3.1 /hadoop
+RUN wget -q -O - https://archive.apache.org/dist/hadoop/core/hadoop-3.3.2/hadoop-3.3.2.tar.gz | tar zxf -
+RUN mv /hadoop-3.3.2 /hadoop
 ENV PATH=/hadoop/bin:/hadoop/sbin:$PATH
 
 COPY docker-entrypoint.sh /hadoop

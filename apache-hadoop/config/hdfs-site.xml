@@ -3,4 +3,31 @@
     <name>dfs.replication</name>
     <value>3</value>
   </property>
+
+  <property>
+    <name>dfs.webhdfs.enabled</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>dfs.support.append</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>dfs.support.broken.append</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>dfs.hosts</name>
+    <value>/hadoop/etc/hadoop/includes</value>
+    <final>true</final>
+  </property>
+
+  <property>
+    <name>dfs.hosts.exclude</name>
+    <value>/hadoop/etc/hadoop/excludes</value>
+    <final>true</final>
+  </property>
 </configuration>

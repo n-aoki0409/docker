@@ -3,4 +3,16 @@
     <name>mapreduce.framework.name</name>
     <value>yarn</value>
   </property>
+
+  <property>
+    <name>mapred.hosts</name>
+    <value>/hadoop/etc/hadoop/includes</value>
+    <final>true</final>
+  </property>
+
+  <property>
+    <name>mapred.hosts.exclude</name>
+    <value>/hadoop/etc/hadoop/excludes</value>
+    <final>true</final>
+  </property>
 </configuration>

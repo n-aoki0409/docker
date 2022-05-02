@@ -5,6 +5,7 @@ services:
     ports:
       - "9870:9870"
       - "8088:8088"
+      - "19888:19888"
     build:
       context: .
       dockerfile: Dockerfile
@@ -33,6 +34,20 @@ services:
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
+    networks:
+      - hadoop
+
+  fluentd:
+    container_name: fluentd
+    ports:
+      - 9880:9880
+      - 24224:24224
+      - 24220:24220
+    build:
+      context: ./fluentd
+      dockerfile: Dockerfile
+    volumes:
+      - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
     networks:
       - hadoop
 
