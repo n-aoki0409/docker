@@ -1,0 +1,16 @@
+#!/bin/bash
+
+/usr/sbin/sshd
+
+hdfs --daemon start journalnode
+
+# 初期active側のnamenode起動を待つ
+sleep 30s
+
+hdfs namenode -bootstrapStandby
+start-dfs.sh
+
+# daemonize
+while true; do
+  sleep 1000
+done

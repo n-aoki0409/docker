@@ -2,8 +2,12 @@
 
 /usr/sbin/sshd
 
+hdfs --daemon start journalnode
+
 hdfs namenode -format
+hdfs zkfc -formatZK
 start-dfs.sh
+
 start-yarn.sh
 mapred --daemon start historyserver
 

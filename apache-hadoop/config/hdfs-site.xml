@@ -3,31 +3,82 @@
     <name>dfs.replication</name>
     <value>3</value>
   </property>
-
   <property>
     <name>dfs.webhdfs.enabled</name>
     <value>true</value>
   </property>
-
   <property>
     <name>dfs.support.append</name>
     <value>true</value>
   </property>
-
   <property>
     <name>dfs.support.broken.append</name>
     <value>true</value>
   </property>
-
   <property>
     <name>dfs.hosts</name>
     <value>/hadoop/etc/hadoop/includes</value>
     <final>true</final>
   </property>
-
   <property>
     <name>dfs.hosts.exclude</name>
     <value>/hadoop/etc/hadoop/excludes</value>
     <final>true</final>
+  </property>
+  <property>
+    <name>dfs.nameservices</name>
+    <value>mycluster</value>
+  </property>
+  <property>
+    <name>dfs.ha.namenodes.mycluster</name>
+    <value>nn1,nn2,nn3</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+    <value>hadoop1:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+    <value>hadoop2:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-address.mycluster.nn3</name>
+    <value>hadoop3:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.mycluster.nn1</name>
+    <value>hadoop1:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.mycluster.nn2</name>
+    <value>hadoop2:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.mycluster.nn3</name>
+    <value>hadoop3:9870</value>
+  </property>
+  <property>
+    <name>dfs.namenode.shared.edits.dir</name>
+    <value>qjournal://hadoop1:8485;hadoop2:8485;hadoop3:8485/mycluster</value>
+  </property>
+  <property>
+    <name>dfs.client.failover.proxy.provider.mycluster</name>
+    <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+  </property>
+  <property>
+    <name>dfs.ha.automatic-failover.enabled</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>dfs.ha.fencing.methods</name>
+    <value>sshfence</value>
+  </property>
+  <property>
+    <name>dfs.ha.fencing.ssh.private-key-files</name>
+    <value>/root/.ssh/id_rsa</value>
+  </property>
+  <property>
+    <name>ha.zookeeper.quorum</name>
+    <value>zoo1:2181,zoo2:2181,zoo3:2181</value>
   </property>
 </configuration>
