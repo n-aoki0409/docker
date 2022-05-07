@@ -4,8 +4,14 @@
 
 hdfs --daemon start journalnode
 
-# 初期active側のnamenode起動を待つ
-sleep 30s
+# 初期active用namenodeの起動を待つ
+while true; do
+  status=`curl -LI hadoop1:9870 -o /dev/null -w '%{http_code}\n' -s`
+  if [ "$status" = "200" ]; then
+    break
+  fi
+  sleep 10s
+done
 
 hdfs namenode -bootstrapStandby
 start-dfs.sh

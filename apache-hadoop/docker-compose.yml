@@ -13,9 +13,9 @@ services:
       - ./config:/hadoop/etc/hadoop
       - ./master/start_active:/hadoop/start
     depends_on:
-      - zoo1
-      - zoo2
-      - zoo3
+      - zk1
+      - zk2
+      - zk3
     networks:
       - hadoop
 
@@ -30,9 +30,9 @@ services:
       - ./config:/hadoop/etc/hadoop
       - ./master/start_standby:/hadoop/start
     depends_on:
-      - zoo1
-      - zoo2
-      - zoo3
+      - zk1
+      - zk2
+      - zk3
     networks:
       - hadoop
 
@@ -47,9 +47,9 @@ services:
       - ./config:/hadoop/etc/hadoop
       - ./master/start_standby:/hadoop/start
     depends_on:
-      - zoo1
-      - zoo2
-      - zoo3
+      - zk1
+      - zk2
+      - zk3
     networks:
       - hadoop
 
@@ -61,10 +61,6 @@ services:
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
-    depends_on:
-      - zoo1
-      - zoo2
-      - zoo3
     networks:
       - hadoop
 
@@ -76,51 +72,47 @@ services:
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
-    depends_on:
-      - zoo1
-      - zoo2
-      - zoo3
     networks:
       - hadoop
 
-  zoo1:
-    image: zookeeper:3.5
-    container_name: zoo1
+  zk1:
+    image: zookeeper:3.8
+    container_name: zk1
     restart: always
-    hostname: zoo1
+    hostname: zk1
     ports:
       - 2181:2181
     environment:
       ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
       ZOO_4LW_COMMANDS_WHITELIST: mntr,conf,ruok
     networks:
       - hadoop
 
-  zoo2:
-    image: zookeeper:3.5
-    container_name: zoo2
+  zk2:
+    image: zookeeper:3.8
+    container_name: zk2
     restart: always
-    hostname: zoo2
+    hostname: zk2
     ports:
       - 2182:2181
     environment:
       ZOO_MY_ID: 2
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
       ZOO_4LW_COMMANDS_WHITELIST: mntr,conf,ruok
     networks:
       - hadoop
 
-  zoo3:
-    image: zookeeper:3.5
-    container_name: zoo3
+  zk3:
+    image: zookeeper:3.8
+    container_name: zk3
     restart: always
-    hostname: zoo3
+    hostname: zk3
     ports:
       - 2183:2181
     environment:
       ZOO_MY_ID: 3
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+      ZOO_SERVERS: server.1=zk1:2888:3888;2181 server.2=zk2:2888:3888;2181 server.3=zk3:2888:3888;2181
       ZOO_4LW_COMMANDS_WHITELIST: mntr,conf,ruok
     networks:
       - hadoop
