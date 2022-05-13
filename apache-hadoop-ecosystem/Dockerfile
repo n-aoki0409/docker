@@ -14,16 +14,19 @@ RUN mkdir /run/sshd \
 # Hadoop
 RUN wget -q -O - https://archive.apache.org/dist/hadoop/core/hadoop-3.3.2/hadoop-3.3.2.tar.gz | tar zxf -
 RUN mv /hadoop-3.3.2 /hadoop
+#RUN mkdir /hadoop/script
 ENV PATH=/hadoop/bin:/hadoop/sbin:$PATH
 
 # Pig
 RUN wget -q -O - https://downloads.apache.org/pig/pig-0.17.0/pig-0.17.0.tar.gz | tar zxf -
 RUN mv /pig-0.17.0 /pig
+#RUN mkdir /pig/script
 ENV PATH=/pig/bin:$PATH
 
 # Hive
 RUN wget -q -O - http://archive.apache.org/dist/hive/hive-3.1.3/apache-hive-3.1.3-bin.tar.gz | tar zxf -
 RUN mv /apache-hive-3.1.3-bin /hive
+#RUN mkdir /hive/script
 ENV PATH=/hive/bin:$PATH
 
 COPY docker-entrypoint.sh /hadoop

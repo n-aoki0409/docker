@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod 700 /hadoop/start
-chmod 700 /hive/start
+chmod 700 /hadoop/script/start
+chmod 700 /hive/script/start
 
-/hadoop/start
+/hadoop/script/start
