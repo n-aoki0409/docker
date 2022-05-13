@@ -43,16 +43,16 @@ services:
     hostname: broker1
     container_name: kafka-broker1
     depends_on:
-      - kafka-zookeeper1
-      - kafka-zookeeper2
-      - kafka-zookeeper3
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
     ports:
       - 29092:29092
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:29092
-      CONFLUENT_SUPPORT_METRICS_ENABLE: false
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker1
 
   broker2:
@@ -61,16 +61,16 @@ services:
     hostname: broker2
     container_name: kafka-broker2
     depends_on:
-      - kafka-zookeeper1
-      - kafka-zookeeper2
-      - kafka-zookeeper3
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
     ports:
       - 39092:39092
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:39092
-      CONFLUENT_SUPPORT_METRICS_ENABLE: false
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker2
 
   broker3:
@@ -79,28 +79,28 @@ services:
     hostname: broker3
     container_name: kafka-broker3
     depends_on:
-      - kafka-zookeeper1
-      - kafka-zookeeper2
-      - kafka-zookeeper3
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
     ports:
       - 49092:49092
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:49092
-      CONFLUENT_SUPPORT_METRICS_ENABLE: false
+      CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker3
 
   client:
     image: confluentinc/cp-kafka:7.0.1
     hostname: client
     container_name: kafka-client
-    # volumes:
-    #   - ./kafka-sandbox-assembly-1.0.jar:/home/appuser/kafka-sandbox-assembly-1.0.jar
+    volumes:
+      - ./kafka-sandbox-assembly-1.0.jar:/home/appuser/kafka-sandbox-assembly-1.0.jar
     depends_on:
-      - kafka-broker1
-      - kafka-broker2
-      - kafka-broker3
+      - broker1
+      - broker2
+      - broker3
     entrypoint: /bin/sh
     tty: true
 
@@ -109,9 +109,9 @@ services:
     hostname: proxy
     container_name: kafka-proxy
     depends_on:
-      - kafka-broker1
-      - kafka-broker2
-      - kafka-broker3
+      - broker1
+      - broker2
+      - broker3
     ports:
       - 8082:8082
     environment:
@@ -126,9 +126,9 @@ services:
     volumes:
       - ./zaiko/latest.txt:/home/appuser/zaiko-latest.txt
     depends_on:
-      - kafka-broker1
-      - kafka-broker2
-      - kafka-broker3
+      - broker1
+      - broker2
+      - broker3
       - mysql
     environment:
       CONNECT_BOOTSTRAP_SERVERS: broker1:29092,broker2:39092,broker3:49092
@@ -144,6 +144,22 @@ services:
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/filestream-connectors,/usr/share/confluent-hub-components,/etc/kafka-connect/jars
 
+  mqtt:
+    image: confluentinc/cp-kafka-mqtt:7.0.1
+    hostname: mqtt
+    container_name: kafka-mqtt
+    depends_on:
+      - broker1
+      - broker2
+      - broker3
+    environment:
+      KAFKA_MQTT_BOOTSTRAP_SERVERS: PLAINTEXT://broker1:29092
+      KAFKA_MQTT_TOPIC_REGEX_LIST: mqtt-source:.*
+
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: kafka-mosquitto
+
   mysql:
     image: mysql:8.0
     hostname: mysql
@@ -157,20 +173,20 @@ services:
       MYSQL_ROOT_PASSWORD: root
     
 
-  # fluentd:
-  #   build:
-  #     context: ./fluentd
-  #   hostname: fluentd
-  #   container_name: kafka-fluentd
-  #   ports:
-  #     - 9880:9880
-  #     - 24224:24224
-  #   volumes:
-  #     - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
-  #   depends_on:
-  #     - kafka-broker1
-  #     - kafka-broker2
-  #     - kafka-broker3
+  fluentd:
+    build:
+      context: ./fluentd
+    hostname: fluentd
+    container_name: kafka-fluentd
+    ports:
+      - 9880:9880
+      - 24224:24224
+    volumes:
+      - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
+    depends_on:
+      - broker1
+      - broker2
+      - broker3
 
 networks:
   kafka:

@@ -61,3 +61,25 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 "poll.interval.ms": 1000
 }
 }'
+
+kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --create --topic mqtt-source --partitions 3 --replication-factor 3
+
+kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --create --topic mqtt-enriched --partitions 3 --replication-factor 3
+
+kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --create --topic device-master --partitions 3 --replication-factor 3 --config cleanup.policy=compact
+
+curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' -d '
+{
+"name": "source-mqtt",
+"config": {
+"connector.class": "io.confluent.connect.mqtt.MqttSourceConnector",
+"tasks.max": "1",
+"mqtt.server.uri": "tcp://mqtt:1883",
+"mqtt.topics": "mqtt",
+"kafka.topic": "mqtt-source",
+"confluent.topic.bootstrap.servers" : "broker1:29092,broker2:39092,broker3:49092",
+"confluent.topic.replication.factor" : "3"
+}
+}'
+
+mosquitto_pub -h mqtt -t mqtt -m "Hello MQTT!"
