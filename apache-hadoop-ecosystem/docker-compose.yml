@@ -1,0 +1,24 @@
+version: "3"
+services:
+  hadoop-eco:
+    container_name: hadoop-eco
+    ports:
+      - "9870:9870"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config/hadoop:/hadoop/etc/hadoop
+      - ./script/hadoop/start:/hadoop/start
+      - ./script/pig/information.txt:/pig/information.txt
+      - ./script/pig/output.pig:/pig/output.pig
+      - ./config/hive:/hive/conf
+      - ./script/hive/start:/hive/start
+      - ./script/hive/sample.sql:/hive/sample.sql
+      - ./script/hive/txns1.txt:/hive/txns1.txt
+      - ./script/hive/email1.txt:/hive/email1.txt
+    networks:
+      - hadoop
+
+networks:
+  hadoop:
