@@ -10,6 +10,8 @@ services:
     volumes:
       - ./config/hadoop:/hadoop/etc/hadoop
       - ./config/hive:/hive/conf
+      - ./config/hbase/hbase-env.sh:/hbase/conf/hbase-env.sh
+      - ./config/hbase/hbase-site.xml:/hbase/conf/hbase-site.xml
       - ./script/hadoop:/hadoop/script
       - ./script/pig:/pig/script
       - ./script/hive:/hive/script

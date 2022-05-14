@@ -29,6 +29,12 @@ RUN mv /apache-hive-3.1.3-bin /hive
 #RUN mkdir /hive/script
 ENV PATH=/hive/bin:$PATH
 
+# HBase
+RUN wget -q -O - https://dlcdn.apache.org/hbase/3.0.0-alpha-2/hbase-3.0.0-alpha-2-bin.tar.gz  | tar zxf -
+RUN mv /hbase-3.0.0-alpha-2 /hbase
+COPY config/hbase /hbase/conf
+ENV PATH=/hbase/bin:$PATH
+
 COPY docker-entrypoint.sh /hadoop
 RUN chmod 700 /hadoop/docker-entrypoint.sh
 

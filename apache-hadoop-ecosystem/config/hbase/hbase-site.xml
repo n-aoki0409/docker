@@ -1,0 +1,14 @@
+<configuration>
+  <property>
+    <name>hbase.wal.provider</name>
+    <value>filesystem</value>
+  </property>
+  <property>
+    <name>hbase.cluster.distributed</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>hdfs://hadoop-eco:9000/hbase</value>
+  </property>
+</configuration>
