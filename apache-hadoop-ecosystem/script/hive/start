@@ -5,5 +5,8 @@ hdfs dfs -mkdir /tmp
 hdfs dfs -chmod g+w /user/hive/warehouse
 hdfs dfs -chmod g+w /tmp
 
+hdfs dfs -put /hive/script/email1.txt /user/hive
+hdfs dfs -put /hive/script/txns1.txt /user/hive
+
 schematool -initSchema -dbType derby
 
