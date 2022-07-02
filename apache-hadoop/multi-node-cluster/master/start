@@ -1,0 +1,13 @@
+#!/bin/bash
+
+/usr/sbin/sshd
+
+hdfs namenode -format
+
+start-dfs.sh
+start-yarn.sh
+
+# daemonize
+while true; do
+  sleep 1000
+done
