@@ -1,12 +1,15 @@
 version: "3"
 services:
   hadoop:
-    container_name: hadoop-flink
+    container_name: hadoop
     ports:
       - "9870:9870"
     build:
       context: .
       dockerfile: Dockerfile
+    volumes:
+      - ./config:/hadoop/etc/hadoop
+      - ./start:/hadoop/start
     networks:
       - hadoop
 
