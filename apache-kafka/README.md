@@ -2,19 +2,19 @@
 
 #### topic 作成
 
-kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --create --topic first-topic --partitions 3 --replication-factor 3
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic first-topic --partitions 3 --replication-factor 3
 
 #### topic 確認
 
-kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --describe --topic first-topic
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --describe --topic first-topic
 
 #### producer 起動
 
-kafka-console-producer --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --topic first-topic
+kafka-console-producer --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --topic first-topic
 
 #### consumer 起動
 
-kafka-console-consumer --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --topic first-topic
+kafka-console-consumer --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --topic first-topic
 
 #### connect 動作確認
 
@@ -62,11 +62,11 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 }
 }'
 
-kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --create --topic mqtt-source --partitions 3 --replication-factor 3
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic mqtt-source --partitions 3 --replication-factor 3
 
-kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --create --topic mqtt-enriched --partitions 3 --replication-factor 3
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic mqtt-enriched --partitions 3 --replication-factor 3
 
-kafka-topics --bootstrap-server broker1:29092,broker2:39092,broker3:49092 --create --topic device-master --partitions 3 --replication-factor 3 --config cleanup.policy=compact
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic device-master --partitions 3 --replication-factor 3 --config cleanup.policy=compact
 
 curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' -d '
 {
@@ -77,7 +77,7 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 "mqtt.server.uri": "tcp://mqtt:1883",
 "mqtt.topics": "mqtt",
 "kafka.topic": "mqtt-source",
-"confluent.topic.bootstrap.servers" : "broker1:29092,broker2:39092,broker3:49092",
+"confluent.topic.bootstrap.servers" : "broker1:29092,broker2:29092,broker3:29092",
 "confluent.topic.replication.factor" : "3"
 }
 }'

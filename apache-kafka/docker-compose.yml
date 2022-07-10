@@ -11,31 +11,31 @@ services:
       ZOOKEEPER_CLIENT_PORT: 22181
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:32888:33888;zookeeper3:42888:43888
+      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:22888:23888;zookeeper3:22888:23888
 
   zookeeper2:
     image: confluentinc/cp-zookeeper:7.0.1
     hostname: zookeeper2
     container_name: kafka-zookeeper2
     ports:
-      - 32181:32181
+      - 32181:22181
     environment:
-      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_CLIENT_PORT: 22181
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SERVER_ID: 2
-      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:32888:33888;zookeeper3:42888:43888
+      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:22888:23888;zookeeper3:22888:23888
 
   zookeeper3:
     image: confluentinc/cp-zookeeper:7.0.1
     hostname: zookeeper3
     container_name: kafka-zookeeper3
     ports:
-      - 42181:42181
+      - 42181:22181
     environment:
-      ZOOKEEPER_CLIENT_PORT: 42181
+      ZOOKEEPER_CLIENT_PORT: 22181
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SERVER_ID: 3
-      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:32888:33888;zookeeper3:42888:43888
+      ZOOKEEPER_SERVERS: zookeeper1:22888:23888;zookeeper2:22888:23888;zookeeper3:22888:23888
 
   broker1:
     build:
@@ -50,7 +50,7 @@ services:
       - 29092:29092
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:29092
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker1
@@ -65,11 +65,11 @@ services:
       - zookeeper2
       - zookeeper3
     ports:
-      - 39092:39092
+      - 39092:29092
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:39092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:29092
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker2
 
@@ -83,11 +83,11 @@ services:
       - zookeeper2
       - zookeeper3
     ports:
-      - 49092:49092
+      - 49092:29092
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:32181,zookeeper3:42181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:49092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:29092
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker3
 
@@ -116,7 +116,7 @@ services:
       - 8082:8082
     environment:
       KAFKA_REST_LISTENERS: http://0.0.0.0:8082
-      KAFKA_REST_BOOTSTRAP_SERVERS: broker1:29092,broker2:39092,broker3:49092
+      KAFKA_REST_BOOTSTRAP_SERVERS: broker1:29092,broker2:29092,broker3:29092
 
   connect:
     build:
@@ -131,7 +131,7 @@ services:
       - broker3
       - mysql
     environment:
-      CONNECT_BOOTSTRAP_SERVERS: broker1:29092,broker2:39092,broker3:49092
+      CONNECT_BOOTSTRAP_SERVERS: broker1:29092,broker2:29092,broker3:29092
       CONNECT_REST_PORT: 28082
       CONNECT_GROUP_ID: quickstart
       CONNECT_CONFIG_STORAGE_TOPIC: quickstart-config
