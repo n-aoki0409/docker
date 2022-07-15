@@ -4,5 +4,6 @@ RUN wget -q -O - http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-
 RUN mv mysql-connector-java-8.0.22/mysql-connector-java-8.0.22.jar /etc/kafka-connect/jars
 RUN rm -rf mysql-connector-java-8.0.22
 
-RUN confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:10.3.3
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:latest
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-mqtt:latest
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:latest

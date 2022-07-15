@@ -14,7 +14,13 @@ kafka-console-producer --bootstrap-server broker1:29092,broker2:29092,broker3:29
 
 #### consumer 起動
 
-kafka-console-consumer --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --topic first-topic
+kafka-console-consumer --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --topic first-topic --from-beginning
+
+##### schema が Avro の場合
+
+schema-registry にログイン
+
+kafka-avro-console-consumer --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --topic source-jdbc-test --from-beginning
 
 #### connect 動作確認
 

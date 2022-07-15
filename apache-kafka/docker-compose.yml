@@ -130,6 +130,7 @@ services:
       - broker2
       - broker3
       - mysql
+      - schema-registry
     environment:
       CONNECT_BOOTSTRAP_SERVERS: broker1:29092,broker2:29092,broker3:29092
       CONNECT_REST_PORT: 28082
@@ -137,12 +138,35 @@ services:
       CONNECT_CONFIG_STORAGE_TOPIC: quickstart-config
       CONNECT_OFFSET_STORAGE_TOPIC: quickstart-offsets
       CONNECT_STATUS_STORAGE_TOPIC: quickstart-status
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
+      # JsonConverterの場合
+      # CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      # CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      # CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      # CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+
+      # AvroConverterの場合
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/filestream-connectors,/usr/share/confluent-hub-components,/etc/kafka-connect/jars
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.0.1
+    hostname: schema-registry
+    container_name: kafka-schema-registry
+    depends_on:
+      - broker1
+      - broker2
+      - broker3
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://broker1:29092,PLAINTEXT://broker2:29092,PLAINTEXT://broker3:29092
+      SCHEMA_REGISTRY_HOST_NAME: localhost
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_DEBUG: true
 
   mqtt:
     image: confluentinc/cp-kafka-mqtt:7.0.1
@@ -171,7 +195,6 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
-    
 
   fluentd:
     build:
