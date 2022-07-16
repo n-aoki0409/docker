@@ -53,7 +53,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:29092
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
-      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker1
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=0.0.0.0
 
   broker2:
     build:
@@ -71,7 +71,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:29092
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
-      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker2
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=0.0.0.0
 
   broker3:
     build:
@@ -89,7 +89,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:29092
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
-      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=broker3
+      KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=0.0.0.0
 
   client:
     image: confluentinc/cp-kafka:7.0.1
@@ -210,6 +210,15 @@ services:
       - broker1
       - broker2
       - broker3
+
+  fink:
+    build:
+      context: ./flink
+    hostname: flink
+    container_name: kafka-flink
+    volumes:
+      - ./flink-sandbox-assembly-1.0.jar:/flink/examples/streaming/flink-sandbox-assembly-1.0.jar
+    tty: true
 
 networks:
   kafka:
