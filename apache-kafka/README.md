@@ -68,11 +68,28 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 }
 }'
 
-kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic mqtt-source --partitions 3 --replication-factor 3
+##### mqtt でメッセージ送信
 
-kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic mqtt-enriched --partitions 3 --replication-factor 3
+eclipse-mosquitto にログイン
+
+mosquitto_pub -h mqtt-broker -t mqtt -m "Hello MQTT!"
+
+##### IoT データの Enrichment
+
+###### topic の生成
 
 kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic device-master --partitions 3 --replication-factor 3 --config cleanup.policy=compact
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic mqtt-source --partitions 3 --replication-factor 3
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic mqtt-enriched --partitions 3 --replication-factor 3
+
+###### master データの登録
+
+kafka-console-producer --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --topic device-master --property "parse.key=true" --property "key.separator=:"
+d001:XA-01,A,20180807,-
+d002:XA-02,B,20180807,-
+d003:XB-05,N,20180910,-
+
+###### mqtt 用の connect を設定
 
 curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' -d '
 {
@@ -80,7 +97,7 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 "config": {
 "connector.class": "io.confluent.connect.mqtt.MqttSourceConnector",
 "tasks.max": "1",
-"mqtt.server.uri": "tcp://mqtt:1883",
+"mqtt.server.uri": "tcp://mqtt-broker:1883",
 "mqtt.topics": "mqtt",
 "kafka.topic": "mqtt-source",
 "confluent.topic.bootstrap.servers" : "broker1:29092,broker2:29092,broker3:29092",
@@ -88,4 +105,7 @@ curl -XPOST http://localhost:8083/connectors -H 'Content-Type:application/json' 
 }
 }'
 
-mosquitto_pub -h mqtt -t mqtt -m "Hello MQTT!"
+###### センサーデータの登録
+
+mosquitto_pub -h mqtt-broker -t mqtt -m "d001,1534396810,30.5,1200"
+mosquitto_pub -h mqtt-broker -t mqtt -m "d002,1534396811,31.5,1201"
