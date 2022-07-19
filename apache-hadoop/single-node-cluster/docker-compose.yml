@@ -4,6 +4,7 @@ services:
     container_name: hadoop
     ports:
       - "9870:9870"
+      - "9864:9864"
     build:
       context: .
       dockerfile: Dockerfile
