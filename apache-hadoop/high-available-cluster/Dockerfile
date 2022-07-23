@@ -1,7 +1,7 @@
 FROM openjdk:8
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends vim ssh psmisc \
+  && apt-get install -y --no-install-recommends ssh psmisc \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 

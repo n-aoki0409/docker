@@ -7,7 +7,6 @@ services:
       - "9864:9864"
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./start:/hadoop/start

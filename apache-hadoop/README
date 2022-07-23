@@ -1,0 +1,27 @@
+#### datanodeの追加（Commission）
+
+新規に立ち上げたインスタンスにログインして下記コマンドを実行
+
+`hdfs --daemon start datanode`
+
+includesに新規datanodeのホスト名を追加し、namenodeで下記コマンドを実行
+
+`hdfs dfsadmin -refreshNodes`
+
+#### datanodeの離脱（Decommission）
+
+該当のdatanodeのホスト名をexcludesに追加
+
+namenodeで下記コマンドを実行
+
+`hdfs dfsadmin -refreshNodes`
+
+#### datanodeを完全にnamenode配下から除外
+
+除外対象のdatanodeのホスト名をincludesから削除
+
+namenodeで下記コマンドを実行
+
+`hdfs dfsadmin -refreshNodes`
+
+この場合、datanodeのホスト上でdatanodeサービスもダウンする模様

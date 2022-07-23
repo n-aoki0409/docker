@@ -1,4 +1,3 @@
-<!-- config/hdfs-site.xml -->
 <configuration>
   <property>
     <name>dfs.replication</name>

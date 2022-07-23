@@ -8,7 +8,6 @@ services:
       - "19888:19888"
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./master/start_active:/hadoop/start
@@ -25,7 +24,6 @@ services:
       - "9871:9870"
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./master/start_standby:/hadoop/start
@@ -42,7 +40,6 @@ services:
       - "9872:9870"
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./master/start_standby:/hadoop/start
@@ -57,7 +54,6 @@ services:
     container_name: hadoop4
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
@@ -68,7 +64,6 @@ services:
     container_name: hadoop5
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
@@ -125,7 +120,6 @@ services:
       - 24220:24220
     build:
       context: ./fluentd
-      dockerfile: Dockerfile
     volumes:
       - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
     networks:

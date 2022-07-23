@@ -6,7 +6,6 @@ services:
       - "9870:9870"
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./master/start:/hadoop/start
@@ -17,7 +16,6 @@ services:
     container_name: hadoop2
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
@@ -28,22 +26,11 @@ services:
     container_name: hadoop3
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
     networks:
       - hadoop
-
-  # hadoop:
-  #   container_name: hadoop1
-  #   ports:
-  #     - "9870:9870"
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - hadoop
 
 networks:
   hadoop:

@@ -6,7 +6,6 @@ services:
       - "9870:9870"
     build:
       context: .
-      dockerfile: Dockerfile
     volumes:
       - ./config/hadoop:/hadoop/etc/hadoop
       - ./config/hive:/hive/conf
