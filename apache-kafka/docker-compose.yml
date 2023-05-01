@@ -96,7 +96,8 @@ services:
     hostname: client
     container_name: kafka-client
     volumes:
-      - ./kafka-sandbox-assembly-1.0.jar:/home/appuser/kafka-sandbox-assembly-1.0.jar
+      - ./client/kafka-first-app-1.0-SNAPSHOT-jar-with-dependencies.jar:/home/appuser/kafka-first-app-1.0-SNAPSHOT-jar-with-dependencies.jar
+      - ./client/delete-records.json:/home/appuser/delete-records.json
     depends_on:
       - broker1
       - broker2
@@ -125,14 +126,18 @@ services:
     container_name: kafka-connect
     volumes:
       - ./zaiko/latest.txt:/home/appuser/zaiko-latest.txt
+      - ./zaiko/credentials:/home/appuser/.aws/credentials
     depends_on:
       - broker1
       - broker2
       - broker3
       - mysql
       - schema-registry
+    ports:
+      - 28082:28082
     environment:
       CONNECT_BOOTSTRAP_SERVERS: broker1:29092,broker2:29092,broker3:29092
+      CONNECT_LISTENERS: http://0.0.0.0:28082
       CONNECT_REST_PORT: 28082
       CONNECT_GROUP_ID: quickstart
       CONNECT_CONFIG_STORAGE_TOPIC: quickstart-config
@@ -140,16 +145,16 @@ services:
       CONNECT_STATUS_STORAGE_TOPIC: quickstart-status
 
       # JsonConverterの場合
-      # CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      # CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      # CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      # CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
 
       # AvroConverterの場合
-      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      #CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      #CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      #CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      #CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/filestream-connectors,/usr/share/confluent-hub-components,/etc/kafka-connect/jars
@@ -195,6 +200,23 @@ services:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
+  
+  minio:
+    image: minio/minio:latest
+    hostname: s3
+    container_name: kafka-s3
+    environment:
+      MINIO_ROOT_USER: localid
+      MINIO_ROOT_PASSWORD: localpassword
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    entrypoint: bash
+    command: -c "/opt/bin/minio server /export --address :9999 --console-address :9001"
+    volumes:
+      - ./s3_data:/export  # MinIOストレージの永続化
+    ports:
+      - '9000:9999'
+      - '9001:9001'
 
   fluentd:
     build:
@@ -211,14 +233,14 @@ services:
       - broker2
       - broker3
 
-  fink:
-    build:
-      context: ./flink
-    hostname: flink
-    container_name: kafka-flink
-    volumes:
-      - ./flink-sandbox-assembly-1.0.jar:/flink/examples/streaming/flink-sandbox-assembly-1.0.jar
-    tty: true
+  # fink:
+  #   build:
+  #     context: ./flink
+  #   hostname: flink
+  #   container_name: kafka-flink
+  #   volumes:
+  #     - ./flink-sandbox-assembly-1.0.jar:/flink/examples/streaming/flink-sandbox-assembly-1.0.jar
+  #   tty: true
 
 networks:
   kafka:

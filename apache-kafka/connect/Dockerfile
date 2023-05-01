@@ -6,4 +6,7 @@ RUN rm -rf mysql-connector-java-8.0.22
 
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-jdbc:latest
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-mqtt:latest
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-s3:latest
 RUN confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:latest
+
+RUN mkdir /home/appuser/.aws
