@@ -93,8 +93,8 @@ curl -XPOST http://localhost:28082/connectors -H 'Content-Type:application/json'
 "name": "sink-sales-data",
 "config": {
 "connector.class": "io.confluent.connect.s3.S3SinkConnector",
-"s3.bucket.name": "datahub-sales-00001234-naoki",
-"s3.region": "ap-northeast-1",
+"s3.bucket.name": "datahub-sales",
+"store.url": "http://s3:9000",
 "storage.class": "io.confluent.connect.s3.storage.S3Storage",
 "format.class": "io.confluent.connect.s3.format.json.JsonFormat",
 "flush.size": 3,

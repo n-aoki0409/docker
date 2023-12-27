@@ -47,11 +47,13 @@ services:
       - zookeeper2
       - zookeeper3
     ports:
-      - 29092:29092
+      - 29094:29094
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker1:29092,OUTSIDE://localhost:29094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=0.0.0.0
 
@@ -65,11 +67,13 @@ services:
       - zookeeper2
       - zookeeper3
     ports:
-      - 39092:29092
+      - 39094:39094
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker2:29092,OUTSIDE://localhost:39094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=0.0.0.0
 
@@ -83,11 +87,13 @@ services:
       - zookeeper2
       - zookeeper3
     ports:
-      - 49092:29092
+      - 49094:49094
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper1:22181,zookeeper2:22181,zookeeper3:22181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://broker3:29092,OUTSIDE://localhost:49094
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       CONFLUENT_SUPPORT_METRICS_ENABLE: "false"
       KAFKA_OPTS: -javaagent:/usr/share/java/kafka/jolokia-jvm-1.7.1.jar=port=8778,host=0.0.0.0
 
@@ -96,8 +102,19 @@ services:
     hostname: client
     container_name: kafka-client
     volumes:
-      - ./client/kafka-first-app-1.0-SNAPSHOT-jar-with-dependencies.jar:/home/appuser/kafka-first-app-1.0-SNAPSHOT-jar-with-dependencies.jar
       - ./client/delete-records.json:/home/appuser/delete-records.json
+    depends_on:
+      - broker1
+      - broker2
+      - broker3
+    entrypoint: /bin/sh
+    tty: true
+
+  app:
+    build:
+      context: ./app
+    hostname: app
+    container_name: kafka-app
     depends_on:
       - broker1
       - broker2
@@ -151,10 +168,10 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
 
       # AvroConverterの場合
-      #CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
-      #CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      #CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
-      #CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      # CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      # CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      # CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      # CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
 
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/filestream-connectors,/usr/share/confluent-hub-components,/etc/kafka-connect/jars
@@ -202,20 +219,22 @@ services:
       MYSQL_ROOT_PASSWORD: root
   
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2022-10-08T20-11-00Z
     hostname: s3
     container_name: kafka-s3
     environment:
-      MINIO_ROOT_USER: localid
-      MINIO_ROOT_PASSWORD: localpassword
-      MINIO_ACCESS_KEY: minio
-      MINIO_SECRET_KEY: minio123
+      # https://zenn.dev/koheiyamayama/articles/9e1803f939d15c
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+      # https://qiita.com/potdig/items/601aa883d87efbbbdc65
+      # MINIO_ACCESS_KEY: minio
+      # MINIO_SECRET_KEY: minio123
     entrypoint: bash
-    command: -c "/opt/bin/minio server /export --address :9999 --console-address :9001"
+    command: -c "/opt/bin/minio server /export --address :9000 --console-address :9001"
     volumes:
       - ./s3_data:/export  # MinIOストレージの永続化
     ports:
-      - '9000:9999'
+      - '9000:9000'
       - '9001:9001'
 
   fluentd:
