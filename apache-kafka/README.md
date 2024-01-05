@@ -94,6 +94,7 @@ curl -XPOST http://localhost:28082/connectors -H 'Content-Type:application/json'
 "config": {
 "connector.class": "io.confluent.connect.s3.S3SinkConnector",
 "s3.bucket.name": "datahub-sales",
+"s3.region": "ap-northeast-1",
 "store.url": "http://s3:9000",
 "storage.class": "io.confluent.connect.s3.storage.S3Storage",
 "format.class": "io.confluent.connect.s3.format.json.JsonFormat",
@@ -149,3 +150,26 @@ curl -XPOST http://localhost:28082/connectors -H 'Content-Type:application/json'
 mosquitto_pub -h mqtt-broker -t mqtt -m "d001,1534396810,30.5,1200"
 mosquitto_pub -h mqtt-broker -t mqtt -m "d002,1534396811,31.5,1201"
 mosquitto_pub -h mqtt-broker -t mqtt -m "d003,1534396812,32.5,1202"
+
+#### ksql の動作確認
+
+##### topic の生成
+
+kafka-topics --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --create --topic ksql-sample-access-log --partitions 3 --replication-factor 3
+
+##### ksql サーバへの接続と stream、table の作成
+
+ksql http://ksqldb-server:8088
+CREATE STREAM access_log (address STRING, item STRING) WITH (KAFKA_TOPIC='ksql-sample-access-log', VALUE_FORMAT='DELIMITED');
+CREATE TABLE item_access_count AS SELECT item, COUNT(\*) AS access_count FROM access_log WINDOW TUMBLING (SIZE 10 MINUTES) GROUP BY item;
+SELECT item, access_count FROM item_access_count;
+
+##### stream 用の topic へのデータ登録
+
+kafka-console-producer --bootstrap-server broker1:29092,broker2:29092,broker3:29092 --topic ksql-sample-access-log
+
+> 192.168.0.7,foo
+> 192.168.0.7,bar
+> 192.168.0.8,foobar
+> 192.168.0.2,bar
+> 192.168.0.9,foo

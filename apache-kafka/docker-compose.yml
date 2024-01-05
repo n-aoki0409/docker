@@ -206,6 +206,33 @@ services:
     image: eclipse-mosquitto
     container_name: kafka-mosquitto
 
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:0.29.0
+    hostname: ksqldb-server
+    container_name: kafka-ksqldb-server
+    depends_on:
+      - broker1
+      - broker2
+      - broker3
+      - schema-registry
+    ports:
+      - 8088:8088
+    environment:
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_BOOTSTRAP_SERVERS: broker1:29092,broker2:29092,broker3:29092
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+
+  ksqldb-client:
+    image: confluentinc/ksqldb-cli:0.29.0
+    hostname: ksqldb-client
+    container_name: kafka-ksqldb-client
+    depends_on:
+      - ksqldb-server
+    entrypoint: /bin/sh
+    tty: true
+
   mysql:
     image: mysql:8.0
     hostname: mysql
