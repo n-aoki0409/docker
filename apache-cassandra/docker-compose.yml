@@ -1,0 +1,64 @@
+version: "3"
+services:
+  cassandra1:
+    image: cassandra:latest
+    container_name: cassandra1
+    volumes:
+      #- ./conf/cassandra.yaml:/etc/cassandra/cassandra.yaml
+      - ./resource:/home/cassandra/resource
+    ports:
+      - "9042:9042"
+    healthcheck:
+      test: [ "CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+    networks:
+      - cassandra
+
+  cassandra2:
+    image: cassandra:latest
+    container_name: cassandra2
+    volumes:
+      #- ./conf/cassandra.yaml:/etc/cassandra/cassandra.yaml
+      - ./resource:/home/cassandra/resource
+    environment:
+      - "CASSANDRA_LISTEN_ADDRESS=cassandra2"
+      - "CASSANDRA_SEEDS=cassandra1"
+    ports:
+      - "9043:9042"
+    healthcheck:
+      test: [ "CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+    depends_on:
+      cassandra1:
+        condition: service_healthy
+    networks:
+      - cassandra
+
+  cassandra3:
+    image: cassandra:latest
+    container_name: cassandra3
+    volumes:
+      #- ./conf/cassandra.yaml:/etc/cassandra/cassandra.yaml
+      - ./resource:/home/cassandra/resource
+    environment:
+      - "CASSANDRA_LISTEN_ADDRESS=cassandra3"
+      - "CASSANDRA_SEEDS=cassandra1"
+    ports:
+      - "9044:9042"
+    healthcheck:
+      test: [ "CMD", "cqlsh", "-e", "describe keyspaces" ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+    depends_on:
+      cassandra2:
+        condition: service_healthy
+    networks:
+      - cassandra
+
+networks:
+  cassandra:
