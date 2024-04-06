@@ -1,3 +1,29 @@
+#### 動作確認
+
+##### 起動コンポーネントの確認
+```
+$ jps
+
+496 SecondaryNameNode
+321 DataNode
+821 NodeManager
+711 ResourceManager
+2840 Jps
+184 NameNode
+1198 JobHistoryServer
+
+分散モードで起動している場合は、コンポーネントが動作しているノード上で確認できる
+```
+
+##### mapreduce
+```
+$ hdfs dfs -mkdir -p /user/hadoop
+$ hdfs dfs -mkdir input
+$ hdfs dfs -put /hadoop/etc/hadoop/*.xml input
+$ yarn jar /hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.6.jar grep input output 'dfs[a-z.]+'
+$ hdfs dfs -cat output/*
+```
+
 #### datanodeの追加（Commission）
 
 新規に立ち上げたインスタンスにログインして下記コマンドを実行

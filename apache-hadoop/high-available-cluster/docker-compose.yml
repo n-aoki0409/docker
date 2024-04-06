@@ -4,12 +4,11 @@ services:
     container_name: hadoop1
     ports:
       - "9870:9870"
-      - "8088:8088"
+      - "9864:9864"
       - "19888:19888"
     build:
       context: .
     volumes:
-      - ./config:/hadoop/etc/hadoop
       - ./master/start_active:/hadoop/start
     depends_on:
       - zk1
@@ -25,7 +24,6 @@ services:
     build:
       context: .
     volumes:
-      - ./config:/hadoop/etc/hadoop
       - ./master/start_standby:/hadoop/start
     depends_on:
       - zk1
@@ -41,7 +39,6 @@ services:
     build:
       context: .
     volumes:
-      - ./config:/hadoop/etc/hadoop
       - ./master/start_standby:/hadoop/start
     depends_on:
       - zk1
@@ -55,7 +52,6 @@ services:
     build:
       context: .
     volumes:
-      - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
     networks:
       - hadoop
@@ -65,7 +61,6 @@ services:
     build:
       context: .
     volumes:
-      - ./config:/hadoop/etc/hadoop
       - ./slave/start:/hadoop/start
     networks:
       - hadoop
@@ -112,18 +107,18 @@ services:
     networks:
       - hadoop
 
-  fluentd:
-    container_name: fluentd
-    ports:
-      - 9880:9880
-      - 24224:24224
-      - 24220:24220
-    build:
-      context: ./fluentd
-    volumes:
-      - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
-    networks:
-      - hadoop
+  # fluentd:
+  #   container_name: fluentd
+  #   ports:
+  #     - 9880:9880
+  #     - 24224:24224
+  #     - 24220:24220
+  #   build:
+  #     context: ./fluentd
+  #   volumes:
+  #     - ./fluentd/fluent.conf:/fluentd/etc/fluent.conf
+  #   networks:
+  #     - hadoop
 
 networks:
   hadoop:

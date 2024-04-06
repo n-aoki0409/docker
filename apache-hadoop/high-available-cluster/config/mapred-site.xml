@@ -4,7 +4,7 @@
     <value>yarn</value>
   </property>
 
-  <property>
+  <!-- <property>
     <name>mapred.hosts</name>
     <value>/hadoop/etc/hadoop/includes</value>
     <final>true</final>
@@ -14,5 +14,5 @@
     <name>mapred.hosts.exclude</name>
     <value>/hadoop/etc/hadoop/excludes</value>
     <final>true</final>
-  </property>
+  </property> -->
 </configuration>

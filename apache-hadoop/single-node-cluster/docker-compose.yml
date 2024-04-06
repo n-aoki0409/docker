@@ -5,11 +5,11 @@ services:
     ports:
       - "9870:9870"
       - "9864:9864"
+      - "19888:19888"
     build:
       context: .
     volumes:
-      - ./config:/hadoop/etc/hadoop
-      - ./start:/hadoop/start
+       - ./start:/hadoop/start
     networks:
       - hadoop
 
